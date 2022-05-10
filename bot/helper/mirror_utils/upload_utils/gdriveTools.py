@@ -1,6 +1,6 @@
-import os
+from os import makedirs, path as ospath, listdir
 import io
-import pickle
+from pickle import load as pload, dump as pdump
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 
