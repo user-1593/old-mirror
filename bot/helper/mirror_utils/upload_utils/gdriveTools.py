@@ -1,4 +1,4 @@
-from os import makedirs, path as ospath, listdir
+import os
 import io
 from pickle import load as pload, dump as pdump
 import urllib.parse as urlparse
@@ -245,7 +245,7 @@ class GoogleDriveHelper:
         size = get_readable_file_size(get_path_size(file_path))
         LOGGER.info("Uploading File: " + file_path)
         self.updater = setInterval(self.update_interval, self._on_upload_progress)
-        if ospath.isfile(file_path):
+        if os.path.isfile(file_path):
             try:
                 mime_type = get_mime_type(file_path)
                 link = self.upload_file(file_path, file_name, mime_type, parent_id)
@@ -521,7 +521,7 @@ class GoogleDriveHelper:
         # Get credentials
         credentials = None
         if not USE_SERVICE_ACCOUNTS:
-            if ospath.exists(self.__G_DRIVE_TOKEN_FILE):
+            if os.path.exists(self.__G_DRIVE_TOKEN_FILE):
                 with open(self.__G_DRIVE_TOKEN_FILE, 'rb') as f:
                     credentials = pload(f)
             else:
