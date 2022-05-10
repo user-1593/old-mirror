@@ -521,21 +521,11 @@ class GoogleDriveHelper:
         # Get credentials
         credentials = None
         if not USE_SERVICE_ACCOUNTS:
-            if os.path.exists(self.__G_DRIVE_TOKEN_FILE):
+            if ospath.exists(self.__G_DRIVE_TOKEN_FILE):
                 with open(self.__G_DRIVE_TOKEN_FILE, 'rb') as f:
-                    credentials = pickle.load(f)
-            if credentials is None or not credentials.valid:
-                if credentials and credentials.expired and credentials.refresh_token:
-                    credentials.refresh(Request())
-                else:
-                    flow = InstalledAppFlow.from_client_secrets_file(
-                        'credentials.json', self.__OAUTH_SCOPE)
-                    LOGGER.info(flow)
-                    credentials = flow.run_console(port=0)
-
-                # Save the credentials for the next run
-                with open(self.__G_DRIVE_TOKEN_FILE, 'wb') as token:
-                    pickle.dump(credentials, token)
+                    credentials = pload(f)
+            else:
+                LOGGER.error('token.pickle not found!')
         else:
             LOGGER.info(f"Authorizing with {SERVICE_ACCOUNT_INDEX}.json service account")
             credentials = service_account.Credentials.from_service_account_file(
