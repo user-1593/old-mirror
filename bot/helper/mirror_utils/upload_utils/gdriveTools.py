@@ -245,7 +245,7 @@ class GoogleDriveHelper:
         size = get_readable_file_size(get_path_size(file_path))
         LOGGER.info("Uploading File: " + file_path)
         self.updater = setInterval(self.update_interval, self._on_upload_progress)
-        if os.path.isfile(file_path):
+        if ospath.isfile(file_path):
             try:
                 mime_type = get_mime_type(file_path)
                 link = self.upload_file(file_path, file_name, mime_type, parent_id)
