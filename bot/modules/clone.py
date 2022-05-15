@@ -5,7 +5,9 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
 from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
-from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit
+from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit, is_gdtot_link
+from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
+from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 import random
 import string
 
@@ -15,6 +17,15 @@ def cloneNode(update, context):
     if len(args) > 1:
         link = args[1]
         gd = gdriveTools.GoogleDriveHelper()
+        is_gdtot = is_gdtot_link(link)
+        if is_gdtot:
+        try:
+            msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
+            link = gdtot(link)
+            deleteMessage(bot, msg)
+        except DirectDownloadLinkException as e:
+            deleteMessage(bot, msg)
+            return sendMessage(str(e), bot, message)
         res, size, name, files = gd.clonehelper(link)
         if res != "":
             sendMessage(res, context.bot, update)
@@ -69,6 +80,8 @@ def cloneNode(update, context):
             sendMarkup(result + cc, context.bot, update, button)
     else:
         sendMessage('𝐏𝐫𝐨𝐯𝐢𝐝𝐞 𝐆-𝐃𝐫𝐢𝐯𝐞 𝐒𝐡𝐚𝐫𝐞𝐚𝐛𝐥𝐞 𝐋𝐢𝐧𝐤 𝐭𝐨 𝐂𝐥𝐨𝐧𝐞.', context.bot, update)
+    if is_gdtot:
+            gd.deletefile(link)
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
