@@ -22,7 +22,7 @@ def cloneNode(update, context):
         try:
             msg = sendMessage(f"Processing: <code>{link}</code>", context.bot, update)
             link = gdtot(link)
-            deleteMessage(bot, msg)
+            deleteMessage(context.bot, msg)
         except DirectDownloadLinkException as e:
             deleteMessage(context.bot, msg)
             return sendMessage(str(e), context.bot, update.message)
