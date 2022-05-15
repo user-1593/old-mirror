@@ -9,6 +9,7 @@ than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtend
 for original authorship. """
 
 from bot import LOGGER, UPTOBOX_TOKEN, CRYPT
+from requests import Session as rsession
 from base64 import b64decode
 from base64 import standard_b64encode
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
