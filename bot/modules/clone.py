@@ -14,18 +14,20 @@ import string
 
 def cloneNode(update, context):
     args = update.message.text.split(" ", maxsplit=1)
+    link = ''
     if len(args) > 1:
         link = args[1]
-        gd = gdriveTools.GoogleDriveHelper()
-        is_gdtot = is_gdtot_link(link)
-        if is_gdtot:
+    is_gdtot = is_gdtot_link(link)
+    if is_gdtot:
         try:
-            msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
+            msg = sendMessage(f"Processing: <code>{link}</code>", context.bot, update.message)
             link = gdtot(link)
             deleteMessage(bot, msg)
         except DirectDownloadLinkException as e:
-            deleteMessage(bot, msg)
-            return sendMessage(str(e), bot, message)
+            deleteMessage(context.bot, msg)
+            return sendMessage(str(e), context.bot, update.message)
+    if is_gdrive_link(link):
+        gd = gdriveTools.GoogleDriveHelper()
         res, size, name, files = gd.clonehelper(link)
         if res != "":
             sendMessage(res, context.bot, update)
@@ -81,7 +83,8 @@ def cloneNode(update, context):
     else:
         sendMessage('𝐏𝐫𝐨𝐯𝐢𝐝𝐞 𝐆-𝐃𝐫𝐢𝐯𝐞 𝐒𝐡𝐚𝐫𝐞𝐚𝐛𝐥𝐞 𝐋𝐢𝐧𝐤 𝐭𝐨 𝐂𝐥𝐨𝐧𝐞.', context.bot, update)
     if is_gdtot:
-            gd.deletefile(link)
+        gd.deletefile(link)
+    LOGGER.info(f"Cloning Done: {name}")
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
