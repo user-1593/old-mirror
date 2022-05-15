@@ -48,8 +48,8 @@ def stats(update, context):
 
 
 def start(update, context):
-    start_string = f'''
     uptime = get_readable_time(time.time() - botStartTime)
+    start_string = f'''
 This bot can mirror all your links to Google Drive!
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
