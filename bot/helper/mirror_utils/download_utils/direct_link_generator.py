@@ -16,6 +16,7 @@ import urllib.parse
 from os import popen
 from random import choice
 from urllib.parse import urlparse
+from bot.helper.ext_utils.bot_utils import is_gdtot_link
 
 import lk21
 import requests, cfscrape
@@ -91,6 +92,8 @@ def direct_link_generator(link: str):
         return fichier(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
+    elif is_gdtot_link(link):
+        return gdtot(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
@@ -411,3 +414,23 @@ def useragent():
         'lxml').findAll('td', {'class': 'useragent'})
     user_agent = choice(useragents)
     return user_agent.text
+
+def gdtot(url: str) -> str:
+    """ Gdtot google drive link generator
+    By https://github.com/xcscxr """
+
+    if CRYPT is None:
+        raise DirectDownloadLinkException("ERROR: CRYPT cookie not provided")
+
+    match = re_findall(r'https?://(.+)\.gdtot\.(.+)\/\S+\/\S+', url)[0]
+
+    with rsession() as client:
+        client.cookies.update({'crypt': CRYPT})
+        res = client.get(url)
+        res = client.get(f"https://{match[0]}.gdtot.{match[1]}/dld?id={url.split('/')[-1]}")
+    matches = re_findall('gd=(.*?)&', res.text)
+    try:
+        decoded_id = b64decode(str(matches[0])).decode('utf-8')
+    except:
+        raise DirectDownloadLinkException("ERROR: Try in your broswer, mostly file not found or user limit exceeded!")
+    return f'https://drive.google.com/open?id={decoded_id}'
