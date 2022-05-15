@@ -422,13 +422,13 @@ def gdtot(url: str) -> str:
     if CRYPT is None:
         raise DirectDownloadLinkException("ERROR: CRYPT cookie not provided")
 
-    match = re_findall(r'https?://(.+)\.gdtot\.(.+)\/\S+\/\S+', url)[0]
+    match = re.findall(r'https?://(.+)\.gdtot\.(.+)\/\S+\/\S+', url)[0]
 
     with rsession() as client:
         client.cookies.update({'crypt': CRYPT})
         res = client.get(url)
         res = client.get(f"https://{match[0]}.gdtot.{match[1]}/dld?id={url.split('/')[-1]}")
-    matches = re_findall('gd=(.*?)&', res.text)
+    matches = re.findall('gd=(.*?)&', res.text)
     try:
         decoded_id = b64decode(str(matches[0])).decode('utf-8')
     except:
