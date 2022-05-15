@@ -22,8 +22,9 @@ from random import choice
 from urllib.parse import urlparse
 from bot.helper.ext_utils.bot_utils import is_gdtot_link
 
+from requests import get, head, post, Session as rsession
 import lk21
-import requests, cfscrape
+import cfscrape
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
