@@ -238,6 +238,10 @@ def get_mega_link_type(url: str):
         return "folder"
     return "file"
 
+def is_gdtot_link(url: str):
+    url = match(r'https?://.+\.gdtot\.\S+', url)
+    return bool(url)
+
 
 def is_magnet(url: str):
     magnet = re.findall(MAGNET_REGEX, url)
