@@ -222,6 +222,12 @@ try:
 except KeyError:
     TORRENT_DIRECT_LIMIT = None
 try:
+    CRYPT = getConfig('CRYPT')
+    if len(CRYPT) == 0:
+        raise KeyError
+except:
+    CRYPT = None    
+try:
     CLONE_LIMIT = getConfig('CLONE_LIMIT')
     if len(CLONE_LIMIT) == 0:
         CLONE_LIMIT = None
