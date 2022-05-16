@@ -1,5 +1,5 @@
 import logging
-from re import match, findall
+import re
 import threading
 import time
 import math
