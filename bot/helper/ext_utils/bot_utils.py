@@ -239,7 +239,7 @@ def get_mega_link_type(url: str):
     return "file"
 
 def is_gdtot_link(url: str):
-    url = match(r'https?://.+\.gdtot\.\S+', url)
+    url = re.match(r'https?://.+\.gdtot\.\S+', url)
     return bool(url)
 
 
